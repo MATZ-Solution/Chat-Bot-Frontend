@@ -7,7 +7,7 @@ const Layout = ({
   children,
   title = 'Info Senior Care Bot',
   description = 'Info Senior Care Bot',
-  favicon = 'https://infosenior.care/img/simplelogo.svg',
+  favicon = 'https://infosenior.care/img/darklogo.svg',
 }) => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -23,7 +23,7 @@ const Layout = ({
         <link rel="icon" href={favicon} />
       </Head>
       <Flex as="nav" bg="gray.50" borderBottomColor="gray.200" position="fixed" w="full" justifyContent="center" p={2} zIndex="banner">
-        <Image src="https://matzsolutions.com/wp-content/uploads/2022/08/Artboard-%E2%80%93-3-1.png" h="12" alt=" INFO SENIOR Care Logo" />
+        <Image src="https://infosenior.care/img/darklogo.svg" h="12" alt=" INFO SENIOR Care Logo" />
 
       </Flex>
       <Flex as="main" flex="1" px="12" py="12" pt="20">
