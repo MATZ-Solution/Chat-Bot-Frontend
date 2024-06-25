@@ -47,9 +47,9 @@ const Layout = ({
         p={2}
         zIndex="banner"
       >
-        <Image src="https://infosenior.care/img/darklogo.svg" h="12" alt=" INFO SENIOR Care Logo" />
+        <Image src="https://infosenior.care/img/darklogo.svg" h="12" alt="INFO SENIOR Care Logo" />
       </Flex>
-      <Flex as="main" flex="1" px="12" py="12" pt="20">
+      <Flex as="main" flex="1" py="12" pt="28">
         {children}
       </Flex>
     </Box>

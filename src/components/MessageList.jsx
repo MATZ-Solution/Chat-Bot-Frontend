@@ -59,8 +59,6 @@ const MessagesList = () => {
       p={4}
       flex="1"
       overflowY="auto"
-      borderRadius="md"
-      boxShadow="lg"
       maxHeight="70vh"
     >
       {messages?.map((message, i) => {
@@ -74,7 +72,6 @@ const MessagesList = () => {
               p={3}
               borderRadius="md"
               maxWidth="70%"
-              boxShadow="md"
             >
               {parseText(message.parts)}
             </Box>
