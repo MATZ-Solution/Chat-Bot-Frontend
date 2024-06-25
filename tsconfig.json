@@ -29,6 +29,14 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "src/components/Layout.jsx", "src/components/MessageForm.jsx", "src/components/MessageList.jsx", "src/pages/api/createMessage.js", "src/pages/_app.jsx", "src/pages/index.jsx", "src/utils/sendMessage.js", "src/utils/useMessages.jsx"  ]
+    "**/*.tsx",
+    "src/components/Layout.jsx",
+    "src/components/MessageForm.jsx",
+    "src/components/MessageList.jsx",
+    "src/pages/api/createMessage.js",
+    "src/pages/_app.jsx",
+    "src/pages/index.jsx",
+    "src/utils/sendMessage.js",
+    "src/utils/useMessages.jsx"
+  ]
 }
