@@ -95,6 +95,11 @@ const MessagesList = () => {
         </Flex>
       )}
       <div ref={bottomRef} />
+      <Box mt={4} p={2} bg={colorMode === 'dark' ? 'gray.800' : 'gray.100'} borderRadius="md">
+        <Text fontSize="sm" color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}>
+          Disclaimer: The responses provided by this chatbot may not always be accurate. Please verify any important information independently.
+        </Text>
+      </Box>
     </Box>
   );
 };
