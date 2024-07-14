@@ -1,4 +1,4 @@
-import { Button, Textarea, Flex, Box, useColorMode, IconButton } from '@chakra-ui/react'
+import { Button, Flex, Box, useColorMode, IconButton, Input } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { useMessages } from 'utils/useMessages'
 import { FaMicrophone, FaMicrophoneSlash } from 'react-icons/fa'
@@ -58,9 +58,10 @@ const MessageForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setIsLoading(true)
+
     setContent('')
     await addMessage(content)
-    setIsLoading(true)
     setIsLoading(false)
   }
 
@@ -74,7 +75,7 @@ const MessageForm = () => {
         align="center"
         boxShadow="md"
       >
-        <Textarea
+        <Input
           value={content}
           onChange={(e) => setContent(e.target.value)}
           placeholder="Enter your message here..."
@@ -95,7 +96,7 @@ const MessageForm = () => {
           h={10}
           w={18}
         />
-        <Button type="submit" colorScheme="blue" isLoading={isLoading} disabled={!content.trim()}>
+        <Button type="submit" colorScheme="blue" isLoading={isLoading} isDisabled={!content.trim()}>
           Send
         </Button>
       </Flex>
