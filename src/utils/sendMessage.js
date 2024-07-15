@@ -37,17 +37,6 @@ const RESPONSE_TEMPLATE = {
   params: {}
 }
 
-const SUCCESS_RESPONSE_TEMPLATE = {
-  success: true,
-  intent: '<intent>',
-  params: {}
-}
-
-const FAILURE_RESPONSE_TEMPLATE = {
-  success: false,
-  error: '<error message>'
-}
-
 const INTENTS = {
   intents: [
     {
@@ -120,24 +109,9 @@ const CATEGORIES = ['nursing-homes', 'in-home-care', 'inpatient-rehabilitations'
 
 const CORE_PROMPTS = {
   task: [
-    // {
-    //   text: 'Strictly avoid using natural language. Only use JSON.'
-    // },
-    // {
-    //   text: `Provide information and answer questions about specific supported categories of Medicaid and Medicare in the USA: ${CATEGORIES}.`
-    // },
-    // {
-    //   text: 'Success is achieved when I correctly classify your query with its intent and relevance.'
-    // },
-    // {
-    //   text: 'A query is considered a failure if it does not relate to Medicaid and Medicare in the USA or other supported categories.'
-    // },
-    // {
-    //   text: 'Classify queries as relevant if they concern Medicaid and Medicare in the USA or fall within other specified categories.'
-    // },
-    // {
-    //   text: 'Irrelevant queries are those that do not pertain to Medicaid and Medicare in the USA or other specified categories.'
-    // },
+    {
+      text: 'Strictly avoid using natural language. Only use JSON.'
+    },
     {
       text: `Identify intent and extract parameters from user input based on supported categories as: ${JSON.stringify(
         INTENTS
@@ -155,39 +129,86 @@ const CORE_PROMPTS = {
     {
       text: `Return response in JSON format as: ${JSON.stringify(RESPONSE_TEMPLATE)}`
     }
-    // {
-    //   text: 'Scope is focused exclusively on Info Senior Care data. Provide information related to Info Senior Care, nursing, hospitals, and health providers.'
-    // },
-    // {
-    //   text: "Only share website links from Info Senior Care. Here's the link: https://infosenior.care/"
-    // }
   ]
+}
+
+const handleCompanyInfo = async (userPrompt, _params) => {
+  const INFO = [
+    {
+      text: 'Info Senior Care (official website: https://infosenior.care/) is a platform where we connect seniors and their families with a variety of senior care facilities and in-home care services. Our mission is to provide a seamless and compassionate experience, ensuring the highest quality care for the seniors in a comfortable and nurturing environment. We understand that looking for senior care options can be challenging and tedious.'
+    },
+    {
+      text: `Provide information and answer questions about specific supported categories of Medicaid and Medicare in the USA: ${CATEGORIES}.`
+    },
+    {
+      text: 'Scope is focused exclusively on Info Senior Care data. Provide information related to Info Senior Care, nursing, hospitals, and health providers.'
+    },
+    {
+      text: "Only share website links from Info Senior Care. Here's the link: https://infosenior.care/"
+    }
+  ]
+
+  const info = INFO.map((message) => ({ role: 'model', parts: [message] }))
+
+  console.log(info)
+
+  const model = GEN_AI.getGenerativeModel({ model: MODEL_NAME })
+  const chat = model.startChat({
+    history: info,
+    GENERATION_CONFIG,
+    SAFETY_SETTINGS
+  })
+  const result = await chat.sendMessageStream(userPrompt)
+  const response = await result.response
+  const reply = response.text()
+  console.log(reply)
+  return reply
+}
+
+const handleMiscellaneous = () => {
+  return 'MISCELLANEOUS'
+}
+
+const INTENT_HANDLE_MAPPINGS = {
+  'company-info': handleCompanyInfo
 }
 
 export const sendMessage = async (messages, context = {}) => {
   try {
     const model = GEN_AI.getGenerativeModel({ model: MODEL_NAME })
 
+    const promptMessages = Object.values(CORE_PROMPTS).flatMap((prompt) =>
+      prompt.map((message) => ({ role: 'model', parts: [message] }))
+    )
+    const historyWithPrompts = [
+      ...promptMessages,
+      ...messages.map((msg) => ({ role: msg.role, parts: [{ text: msg.parts }] }))
+    ]
     const userMessages = messages.filter((message) => message.role === 'user')
 
     const promptHistory = Object.values(CORE_PROMPTS).flatMap((prompt) =>
       prompt.map((message) => ({ role: 'model', parts: [message] }))
     )
 
-    console.log(context)
     const chat = model.startChat({
-      history: promptHistory,
+      history: historyWithPrompts,
       GENERATION_CONFIG,
       SAFETY_SETTINGS,
       context
     })
 
     const recentMessage = userMessages[userMessages.length - 1].parts
-    console.log(recentMessage)
-    const result = await chat.sendMessage(recentMessage)
+    const result = await chat.sendMessageStream(recentMessage)
     const response = await result.response
-    const reply = response.text()
-    console.log(reply)
+    let reply = response.text()
+
+    try {
+      const parsedJSON = JSON.parse(reply)
+      reply = await INTENT_HANDLE_MAPPINGS[parsedJSON.intent](recentMessage, parsedJSON.parms)
+    } catch (e) {
+      reply = await handleCompanyInfo(recentMessage, {})
+    }
+
     const replyMessage = {
       role: 'model',
       parts: reply
