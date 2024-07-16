@@ -10,9 +10,6 @@ module.exports = {
   ],
   theme: {
     extend: {
-      fontFamily: {
-        'basier-circle': ['Basier Circle', ...defaultTheme.fontFamily.sans]
-      },
       colors: {
         gray: colors.slate,
         primary: {

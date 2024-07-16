@@ -1,4 +1,4 @@
-import { Button, Flex, Box, useColorMode, IconButton, Input } from '@chakra-ui/react'
+import { Button, Flex, Box, useColorMode, IconButton, Input, Text } from '@chakra-ui/react'
 import { useState, useEffect } from 'react'
 import { useMessages } from 'utils/useMessages'
 import { FaMicrophone, FaMicrophoneSlash } from 'react-icons/fa'
@@ -66,41 +66,54 @@ const MessageForm = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit}>
-      <Flex
-        bg={colorMode === 'dark' ? 'gray.800' : 'white'}
-        p={4}
-        borderTop="1px solid"
-        borderColor="gray.200"
-        align="center"
-        boxShadow="md"
-      >
-        <Input
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder="Enter your message here..."
-          size="md"
-          resize="none"
-          flex="1"
-          mr={2}
-          bg={colorMode === 'dark' ? 'gray.700' : 'gray.100'}
-          color={colorMode === 'dark' ? 'white' : 'black'}
-        />
-        <IconButton
-          onClick={handleVoiceInput}
-          icon={
-            isListening ? <BsFillStopCircleFill fontSize={28} /> : <FaMicrophone fontSize={28} />
-          }
-          aria-label={isListening ? 'Stop Listening' : 'Start Listening'}
-          mr={2}
-          h={10}
-          w={18}
-        />
-        <Button type="submit" colorScheme="blue" isLoading={isLoading} isDisabled={!content.trim()}>
-          Send
-        </Button>
-      </Flex>
-    </form>
+    <>
+      <Box mt={4} p={2} bg={colorMode === 'dark' ? 'gray.800' : 'gray.100'} borderRadius="md">
+        <Text fontSize="sm" color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}>
+          Disclaimer: The responses provided by this chatbot may not always be accurate. Please
+          verify any important information independently.
+        </Text>
+      </Box>
+      <form onSubmit={handleSubmit}>
+        <Flex
+          bg={colorMode === 'dark' ? 'gray.800' : 'white'}
+          p={4}
+          borderTop="1px solid"
+          borderColor="gray.200"
+          align="center"
+          boxShadow="md"
+        >
+          <Input
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Enter your message here..."
+            size="md"
+            resize="none"
+            flex="1"
+            mr={2}
+            bg={colorMode === 'dark' ? 'gray.700' : 'gray.100'}
+            color={colorMode === 'dark' ? 'white' : 'black'}
+          />
+          <IconButton
+            onClick={handleVoiceInput}
+            icon={
+              isListening ? <BsFillStopCircleFill fontSize={28} /> : <FaMicrophone fontSize={28} />
+            }
+            aria-label={isListening ? 'Stop Listening' : 'Start Listening'}
+            mr={2}
+            h={10}
+            w={18}
+          />
+          <Button
+            type="submit"
+            colorScheme="blue"
+            isLoading={isLoading}
+            isDisabled={!content.trim()}
+          >
+            Send
+          </Button>
+        </Flex>
+      </form>
+    </>
   )
 }
 

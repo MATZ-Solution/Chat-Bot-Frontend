@@ -84,23 +84,19 @@ const MessagesList = () => {
             >
               {parseText(message.parts)}
             </Box>
-            {isUser && <Avatar src="/img/user.jpg" ml={2} />}
+            {isUser && <Avatar src="/img/user.png" ml={2} />}
           </Flex>
         )
       })}
       {isLoadingAnswer && (
         <Flex justify="flex-end" mt={2} mb={4}>
-          <Spinner size="sm" />
-          <Text ml={2}>David is thinking...</Text>
+          <div className="flex items-center">
+            <Spinner size="sm" />
+            <Text ml={2}>David is thinking...</Text>
+          </div>
         </Flex>
       )}
       <div ref={bottomRef} />
-      <Box mt={4} p={2} bg={colorMode === 'dark' ? 'gray.800' : 'gray.100'} borderRadius="md">
-        <Text fontSize="sm" color={colorMode === 'dark' ? 'gray.400' : 'gray.600'}>
-          Disclaimer: The responses provided by this chatbot may not always be accurate. Please
-          verify any important information independently.
-        </Text>
-      </Box>
     </Box>
   )
 }
