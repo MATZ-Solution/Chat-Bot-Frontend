@@ -1,7 +1,7 @@
 import { GEN_AI, MODEL_NAME, GENERATION_CONFIG, SAFETY_SETTINGS } from './model'
 
 import { CORE_PROMPTS } from './prompts'
-import { INTENT_HANDLES } from './intentHandlers'
+import { INTENT_HANDLES, handleMiscellaneous } from './intentHandlers'
 
 export const sendMessage = async (messages, context = {}) => {
   try {
@@ -32,7 +32,7 @@ export const sendMessage = async (messages, context = {}) => {
       reply = await INTENT_HANDLES[parsedJSON.intent](recentMessage, parsedJSON.params)
     } catch (e) {
       console.log('Fallback', e)
-      reply = await INTENT_HANDLES['company-info'](recentMessage, {})
+      reply = handleMiscellaneous()
     }
 
     const replyMessage = {

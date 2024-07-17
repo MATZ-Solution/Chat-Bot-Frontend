@@ -1,70 +1,32 @@
 import React, { useEffect, useRef } from 'react'
+
+import { Box, Flex, Avatar, Text, Spinner, useColorMode, Mark } from '@chakra-ui/react'
+
 import { useMessages } from 'utils/useMessages'
-import { Box, Flex, Avatar, Text, Spinner, useColorMode } from '@chakra-ui/react'
+
+import { marked } from 'marked'
+
+function convertMarkdownToHtml(markdownString) {
+  const htmlString = marked(markdownString)
+  return htmlString
+}
 
 const MessagesList = () => {
   const { messages, isLoadingAnswer } = useMessages()
-  const { colorMode } = useColorMode()
-  const bottomRef = useRef(null)
 
+  const { colorMode } = useColorMode()
+
+  const bottomRef = useRef(null)
   useEffect(() => {
     if (bottomRef.current) {
       bottomRef.current.scrollIntoView({ behavior: 'smooth' })
     }
   }, [messages, isLoadingAnswer])
 
-  const parseText = (text) => {
-    const lines = text.split('\n')
-
-    return lines.map((line, index) => {
-      const boldBulletRegex = /\* \*\*(.*?)\*\*/
-      const boldTextRegex = /\*\*(.*?)\*\*/
-      const numberedBulletRegex = /^(\d+)\.\s/
-
-      let parts = []
-      let lastIndex = 0
-
-      // Check for * ** and apply bold formatting
-      let match = line.match(boldBulletRegex)
-      while (match) {
-        const [fullMatch, content] = match
-        parts.push(line.substring(lastIndex, match.index))
-        parts.push(<i key={index}>{content}</i>)
-        lastIndex = match.index + fullMatch.length
-        match = line.substring(lastIndex).match(boldBulletRegex)
-      }
-      parts.push(line.substring(lastIndex))
-
-      // Check for ** and apply bold formatting
-      parts = parts.flatMap((part, innerIndex) => {
-        if (typeof part === 'string') {
-          const match = part.match(boldTextRegex)
-          if (match) {
-            const [fullMatch, content] = match
-            return [
-              part.substring(0, match.index),
-              <strong key={index + innerIndex}>{content}</strong>,
-              part.substring(match.index + fullMatch.length)
-            ]
-          }
-        }
-        return part
-      })
-
-      // Check for numbered bullets and maintain numbering
-      // const numberedMatch = line.match(numberedBulletRegex);
-      // if (numberedMatch) {
-      //   const number = numberedMatch[1];
-      //   parts = [<span key={index}>{number}. </span>, ...parts.slice(1)];
-      // }
-
-      return <p key={index}>{parts}</p>
-    })
-  }
-
   return (
     <Box
       bg={colorMode === 'dark' ? 'gray.900' : 'gray.50'}
+      color="neutral.100"
       p={4}
       flex="1"
       overflowY="auto"
@@ -82,7 +44,7 @@ const MessagesList = () => {
               borderRadius="md"
               maxWidth="70%"
             >
-              {parseText(message.parts)}
+              <div dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(message.parts) }}></div>
             </Box>
             {isUser && <Avatar src="/img/user.png" ml={2} />}
           </Flex>
