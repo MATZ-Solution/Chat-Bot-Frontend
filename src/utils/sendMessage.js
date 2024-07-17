@@ -43,6 +43,6 @@ export const sendMessage = async (messages, context = {}) => {
     return { data: { choices: [{ message: reply }], context: updatedContext } }
   } catch (error) {
     console.error(error)
-    return { data: { choices: [{ message: 'An error occurred' }] } }
+    return { data: { choices: [{ message: 'An unexpected error occurred. Please rephrase your request.' }] } }
   }
 }

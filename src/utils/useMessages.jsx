@@ -41,7 +41,7 @@ export function MessagesProvider({ children }) {
       setMessages((prevMessages) => [...prevMessages, { role: 'model', parts: reply }])
       setContext(data.context) // Update context with the new context from the response
     } catch (error) {
-      addToast({ title: 'An error occurred', type: 'error' })
+      addToast({ title: 'An error occurred.', type: 'error' })
     } finally {
       setIsLoadingAnswer(false)
     }

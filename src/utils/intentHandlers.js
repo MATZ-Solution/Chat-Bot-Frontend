@@ -1,13 +1,13 @@
 import { GEN_AI, MODEL_NAME, GENERATION_CONFIG, SAFETY_SETTINGS } from './model'
 
-import { DOMAIN_SPECIFIC_INFO } from './knowledgeBank'
+import { COMPANY_INFO, CHATBOT_INFO_AND_FEATURES } from './knowledgeBank'
 
-import { toTitleCase, normalizeState } from './helpers'
+import { toTitleCase, normalizeState, templatize } from './helpers'
 
 const BACKEND_URI = 'http://localhost:3000/api'
 
 const handleCompanyInfo = async (userPrompt, _params) => {
-  const info = DOMAIN_SPECIFIC_INFO.map((message) => ({ role: 'model', parts: [message] }))
+  const info = COMPANY_INFO.map((message) => ({ role: 'model', parts: [message] }))
   const model = GEN_AI.getGenerativeModel({ model: MODEL_NAME })
   const chat = model.startChat({
     history: info,
@@ -18,30 +18,6 @@ const handleCompanyInfo = async (userPrompt, _params) => {
   const response = await result.response
   const reply = response.text()
   return reply
-}
-
-const templatize = (json, index) => {
-  var { name, fullAddress, city, state, zipCode, mainCategory: category } = json
-
-  name = toTitleCase(name)
-  fullAddress = toTitleCase(fullAddress)
-  city = toTitleCase(city)
-  state = toTitleCase(state)
-  category = toTitleCase(category)
-
-  return `
-  <li class="py-1">
-    <h2>${index + 1}. <b>${name}</b></h2>
-    <ul class="pl-4">
-      <li>
-        <b>Address:</b> ${fullAddress}, ${city}, ${state} ${zipCode}
-      </li>
-      <li>
-        <b>Category:</b> ${category}
-      </li>
-    </ul>
-  </li>
-  `
 }
 
 const handleFindFacilitiesByLocation = async (userPrompt, params) => {
@@ -68,12 +44,27 @@ const handleFindFacilitiesByLocation = async (userPrompt, params) => {
   return html
 }
 
+const handleChatbotInfoAndFeatures = async (userPrompt, _params) => {
+  const info = CHATBOT_INFO_AND_FEATURES.map((message) => ({ role: 'model', parts: [message] }))
+  const model = GEN_AI.getGenerativeModel({ model: MODEL_NAME })
+  const chat = model.startChat({
+    history: info,
+    GENERATION_CONFIG,
+    SAFETY_SETTINGS
+  })
+  const result = await chat.sendMessageStream(userPrompt)
+  const response = await result.response
+  const reply = response.text()
+  return reply
+}
+
 const handleMiscellaneous = () => {
   return "I'm sorry, I'm not equipped to handle that request at the moment. Is there anything else I can assist you with?"
 }
 
 const INTENT_HANDLES = {
   'company-info': handleCompanyInfo,
+  'chatbot-info-and-features': handleChatbotInfoAndFeatures,
   'find-facilities-by-location': handleFindFacilitiesByLocation
 }
 

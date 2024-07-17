@@ -1,9 +1,6 @@
 const CATEGORIES = ['nursing-homes', 'in-home-care', 'inpatient-rehabilitations', 'memory-care']
 
-const DOMAIN_SPECIFIC_INFO = [
-  {
-    text: 'Hello, I am David, your personal assistant from Info Senior Care. I am here to provide you with detailed information about our company, nursing care, hospitals, and health providers. How may I assist you today?'
-  },
+const COMPANY_INFO = [
   {
     text: 'Info Senior Care is a platform where we connect seniors and their families with a variety of senior care facilities and in-home care services.'
   },
@@ -36,4 +33,31 @@ const DOMAIN_SPECIFIC_INFO = [
   }
 ]
 
-module.exports = { CATEGORIES, DOMAIN_SPECIFIC_INFO }
+const CHATBOT_INFO_AND_FEATURES = [
+  {
+    text: 'I am David, your personal assistant from Info Senior Care. I am here to provide you with detailed information about our company, nursing care, hospitals, and health providers. How may I assist you today?'
+  },
+  {
+    text: 'I provide information about Medicare facilities.'
+  },
+  {
+    text: 'You can inquire about our company or website, including our mission, services, and contact information.'
+  },
+  {
+    text: 'I offer features to find Medicare facilities by location, category, and proximity.'
+  },
+  {
+    text: 'You can search for specific Medicare facilities by name.'
+  },
+  {
+    text: 'I list services, contact information, and ratings of Medicare facilities.'
+  },
+  {
+    text: 'I can check if a Medicare facility is top-rated.'
+  },
+  {
+    text: 'I provide a capability to locate Medicare facilities on a map.'
+  }
+]
+
+module.exports = { CATEGORIES, COMPANY_INFO, CHATBOT_INFO_AND_FEATURES }

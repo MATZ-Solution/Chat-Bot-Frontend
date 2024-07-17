@@ -7,14 +7,8 @@ const INTENTS = {
       params: []
     },
     {
-      id: 'chatbot-info',
-      description: 'Ask about the chatbot.',
-      params: []
-    },
-    {
-      id: 'chatbot-features',
-      description:
-        'Inquire about the features and capabilities of the chatbot, including what it can do, services it provides, and information it retrieves.',
+      id: 'chatbot-info-and-features',
+      description: 'Ask about the chatbot, its features, and capabilities.',
       params: []
     },
     {
