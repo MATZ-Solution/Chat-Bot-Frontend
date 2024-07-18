@@ -24,8 +24,8 @@ const INTENTS = {
     },
     {
       id: 'search-facility',
-      description: 'Search for a specific Medicare facility by its name.',
-      params: ['facilityName']
+      description: 'Search for a specific Medicare facility by its name in a specified category.',
+      params: ['category', 'facilityName']
     },
     {
       id: 'list-facility-services',

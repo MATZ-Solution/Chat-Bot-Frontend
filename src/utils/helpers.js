@@ -32,9 +32,26 @@ const templatize = (json, index) => {
       <li>
         <b>Category:</b> ${category}
       </li>
+      <li>
+        <b>Rating:</b> ${json.scrapedAverageRating ? json.scrapedAverageRating.stars.toFixed(2) : 'N/A'}
+      </li>
     </ul>
   </li>
   `
 }
 
-module.exports = { toTitleCase, normalizeState, templatize }
+const getLocation = () => {
+  if (navigator.geolocation) {
+    navigator.geolocation.getCurrentPosition(showPosition)
+  } else {
+    x.innerHTML = 'Geolocation is not supported by this browser.'
+  }
+}
+
+const showPosition = (position) => {
+  alert(position.address.postalCode)
+  alert(position.address.city)
+  alert(position.address.country)
+}
+
+module.exports = { toTitleCase, normalizeState, templatize, getLocation }

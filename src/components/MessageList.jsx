@@ -6,11 +6,6 @@ import { useMessages } from 'utils/useMessages'
 
 import { marked } from 'marked'
 
-function convertMarkdownToHtml(markdownString) {
-  const htmlString = marked(markdownString)
-  return htmlString
-}
-
 const MessagesList = () => {
   const { messages, isLoadingAnswer } = useMessages()
 
@@ -44,7 +39,7 @@ const MessagesList = () => {
               borderRadius="md"
               maxWidth="70%"
             >
-              <div dangerouslySetInnerHTML={{ __html: convertMarkdownToHtml(message.parts) }}></div>
+              <div dangerouslySetInnerHTML={{ __html: marked(message.parts) }}></div>
             </Box>
             {isUser && <Avatar src="/img/user.png" ml={2} />}
           </Flex>

@@ -2,12 +2,26 @@ import { GEN_AI, MODEL_NAME, GENERATION_CONFIG, SAFETY_SETTINGS } from './model'
 
 import { COMPANY_INFO, CHATBOT_INFO_AND_FEATURES } from './knowledgeBank'
 
-import { toTitleCase, normalizeState, templatize } from './helpers'
+import { toTitleCase, normalizeState, templatize, getLocation } from './helpers'
 
 const BACKEND_URI = 'http://localhost:3000/api'
 
 const handleCompanyInfo = async (userPrompt, _params) => {
   const info = COMPANY_INFO.map((message) => ({ role: 'model', parts: [message] }))
+  const model = GEN_AI.getGenerativeModel({ model: MODEL_NAME })
+  const chat = model.startChat({
+    history: info,
+    GENERATION_CONFIG,
+    SAFETY_SETTINGS
+  })
+  const result = await chat.sendMessageStream(userPrompt)
+  const response = await result.response
+  const reply = response.text()
+  return reply
+}
+
+const handleChatbotInfoAndFeatures = async (userPrompt, _params) => {
+  const info = CHATBOT_INFO_AND_FEATURES.map((message) => ({ role: 'model', parts: [message] }))
   const model = GEN_AI.getGenerativeModel({ model: MODEL_NAME })
   const chat = model.startChat({
     history: info,
@@ -31,11 +45,15 @@ const handleFindFacilitiesByLocation = async (userPrompt, params) => {
     query += `city=${toTitleCase(params.city)}&`
   }
 
+  if (params.zipCode) {
+    query += `zipCode=${params.zipCode}`
+  }
+
   const request = `${BACKEND_URI}/${params.category}/fetch?${query}`
   const response = await fetch(request)
   const json = await response.json()
   const html = `
-  I found ${json.length} records matching your query.
+  I fetched the top ${json.length} records matching your query.
   ${json.length > 0 ? 'Here is the information you requested:' : ''}
   <ul>
     ${json.map(templatize).join('\n')}
@@ -44,18 +62,12 @@ const handleFindFacilitiesByLocation = async (userPrompt, params) => {
   return html
 }
 
-const handleChatbotInfoAndFeatures = async (userPrompt, _params) => {
-  const info = CHATBOT_INFO_AND_FEATURES.map((message) => ({ role: 'model', parts: [message] }))
-  const model = GEN_AI.getGenerativeModel({ model: MODEL_NAME })
-  const chat = model.startChat({
-    history: info,
-    GENERATION_CONFIG,
-    SAFETY_SETTINGS
-  })
-  const result = await chat.sendMessageStream(userPrompt)
-  const response = await result.response
-  const reply = response.text()
-  return reply
+const handleNearbyFacilities = () => {
+  return 'TO BE IMPLEMENTED: NEAR BY FACILITY'
+}
+
+const handleSearchFacility = async (userPrompt, params) => {
+  return 'TO BE IMPLEMENTED: SEARCH FACILITY'
 }
 
 const handleMiscellaneous = () => {
@@ -65,7 +77,9 @@ const handleMiscellaneous = () => {
 const INTENT_HANDLES = {
   'company-info': handleCompanyInfo,
   'chatbot-info-and-features': handleChatbotInfoAndFeatures,
-  'find-facilities-by-location': handleFindFacilitiesByLocation
+  'find-facilities-by-location': handleFindFacilitiesByLocation,
+  'find-nearby-facilities': handleNearbyFacilities,
+  'search-facility': handleSearchFacility
 }
 
 module.exports = { INTENT_HANDLES, handleMiscellaneous }
